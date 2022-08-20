@@ -50,6 +50,32 @@ public class ListDataActivity extends AppCompatActivity {
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
         mListView.setAdapter(adapter);
 
+        /*
+
+         */
+        //set an onItemClickListener to the ListView
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String name = adapterView.getItemAtPosition(i).toString();
+
+                Cursor data = mDatabaseHelper.getItemID(name); //get the id associated with that name
+                int itemID = -1;
+                while(data.moveToNext()){
+                    itemID = data.getInt(0);
+                }
+                if(itemID > -1){
+                    Intent editScreenIntent = new Intent(ListDataActivity.this, EditDataActivity.class);
+                    editScreenIntent.putExtra("id",itemID);
+                    editScreenIntent.putExtra("name",name);
+                    startActivity(editScreenIntent);
+                }
+                else{
+                    toastMessage("No ID associated with that name");
+                }
+            }
+        });
+
     }
     /**
      * customizable toast
